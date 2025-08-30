@@ -1,7 +1,7 @@
 import { Canvas } from "@react-three/fiber";
 import { AdaptiveDpr, AdaptiveEvents, Environment } from "@react-three/drei";
 import { Suspense, useMemo } from "react";
-import { useGpuTier, hasWebGL } from "./useGpuTier.js";
+// import { useGpuTier, hasWebGL } from "./useGpuTier.js";
 import Scene from "./Scene";
 
 export default function Hero3D({ isDay }) {
