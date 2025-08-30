@@ -1,0 +1,56 @@
+.home {
+  display: grid;
+  gap: 60px; /* increased spacing between sections */
+  padding: 60px 40px 140px; /* more padding overall */
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+p {
+  font-size: 15px; /* consistent size for all text */
+  line-height: 1.6;
+  margin: 0 0 14px;
+}
+
+.intro,
+.location {
+  position: relative;
+}
+
+.expander {
+  background: none;
+  border: none;
+  color: #bbb;
+  font-size: 15px;
+  cursor: pointer;
+  margin-bottom: 12px;
+}
+
+.expander:hover {
+  color: #fff;
+}
+
+.hero-zone {
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+
+.hero-canvas {
+  width: min(700px, 85vw);
+  aspect-ratio: 16/10;
+  margin: 0 auto;
+  border-radius: 12px;
+  overflow: hidden;
+  z-index: 0;
+}
+
+/* label to the right of the hero */
+.micro-label {
+  position: absolute;
+  right: -140px;
+  top: 20px;
+  font-size: 13px;
+  color: #bdbdbd;
+  max-width: 200px;
+}
