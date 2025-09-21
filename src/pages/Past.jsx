@@ -1,105 +1,114 @@
-import { useState } from "react";
-import { Canvas } from "@react-three/fiber";
-import { OrbitControls, useGLTF, Bounds } from "@react-three/drei";
-import "./past.css";
 
-const items = [
-  {
-    id: "td",
-    title: "Software Developer Intern @ TD Bank",
-    dates: "Sept 2025 – Present",
-    bullets: [
-      "Taught logic and state machines to 120+ students; designed slides for 500+; adapted to diverse learning styles and collaborated under pressure.",
-    ],
-  },
-  {
-    id: "ga",
-    title: "Mobile App Developer @ G&A Robot",
-    dates: "June 2025 – August 2025",
-    bullets: [
-      "Taught logic and state machines to 120+ students; designed slides for 500+; adapted to diverse learning styles and collaborated under pressure.",
-    ],
-  },
-  {
-    id: "sus",
-    title: "Web Developer @ UBC SUS",
-    dates: "January 2025 – Present",
-    bullets: [
-      "Taught logic and state machines to 120+ students; designed slides for 500+; adapted to diverse learning styles and collaborated under pressure.",
-    ],
-  },
-  {
-    id: "ta",
-    title: "Teaching Assistant @ UBC CS Department",
-    dates: "Sept 2023 – August 2025",
-    bullets: [
-      "Taught logic and state machines to 120+ students; designed slides for 500+; adapted to diverse learning styles and collaborated under pressure.",
-    ],
-  },
-];
+import { useEffect, useRef } from "react"
+import * as THREE from "three"
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js"
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js"
 
-// small loader for your .glb model
-function PastModel(props) {
-  const { scene } = useGLTF("/models/past.glb");
-  return <primitive object={scene} {...props} />;
-}
+export default function Home() {
+  const mountRef = useRef(null)
 
-export default function Past() {
-  const [open, setOpen] = useState(() =>
-    Object.fromEntries(items.map((i) => [i.id, false]))
-  );
+  useEffect(() => {
+    const mount = mountRef.current
+    const width = mount.clientWidth
+    const height = mount.clientHeight
 
-  const toggle = (id) =>
-    setOpen((o) => ({ ...o, [id]: !o[id] }));
+    // Scene
+    const scene = new THREE.Scene()
+
+    // Camera
+    const camera = new THREE.PerspectiveCamera(95, width / height, 0.1, 1000)
+    camera.position.z = 200
+    camera.position.y = -100
+    camera.position.x = 0
+
+    // Renderer
+    const renderer = new THREE.WebGLRenderer({ antialias: true })
+    renderer.setSize(width, height)
+    mount.appendChild(renderer.domElement)
+
+    // Controls
+    const controls = new OrbitControls(camera, renderer.domElement)
+
+    // Light
+    const light = new THREE.DirectionalLight(0xffffff, 1)
+    light.position.set(5, 5, 5)
+    scene.add(light)
+
+    // Load GLB
+    const loader = new GLTFLoader()
+    loader.load(
+      "/models/past.glb", 
+      (gltf) => {
+        const model = gltf.scene
+        model.scale.set(1, 1, 1)
+        scene.add(model)
+      },
+      undefined,
+      (error) => {
+        console.error("Error loading GLB:", error)
+      }
+    )
+
+    // Animate
+    const animate = () => {
+      requestAnimationFrame(animate)
+      controls.update()
+      renderer.render(scene, camera)
+    }
+    animate()
+
+    // Cleanup
+    return () => {
+      mount.removeChild(renderer.domElement)
+    }
+  }, [])
 
   return (
-    <main className="past">
-      {/* Top 3D past.glb model */}
-      <div className="past-hero">
-        <Canvas camera={{ position: [0, 0, 5], fov: 45 }}>
-          <ambientLight intensity={1.2} />
-          <directionalLight position={[5, 5, 5]} />
-          <Bounds fit clip observe margin={1.2}>
-            <PastModel />
-          </Bounds>
-          <PastModel scale={0.5} />
-          <OrbitControls enableZoom={false} />
-        </Canvas>
+    <div
+      style={{
+        minHeight: "100vh",
+        width: "100%",
+        margin: 0,
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      {/* Main content area */}
+      <div
+        style={{
+          flex: 1,
+          position: "relative", // important for absolute children
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          padding: "20px",
+          gap: "40px",
+        }}
+      >
+        {/* GLB container */}
+        <div
+          style={{
+            width: "100%",
+            height: "500px",
+            position: "relative",
+          }}
+        >
+          <div
+            ref={mountRef}
+            style={{
+              width: "100%",
+              height: "100%",
+              position: "absolute",
+              top: 0,
+              left: 0,
+              zIndex: 0, // background
+            }}
+          />
+        </div>
+
+        <div style={{ width: "60%", height: "200px" }}>intro text</div>
+
       </div>
-
-      {/* Job history */}
-      {items.map((job, i) => {
-        const flip = i % 2 === 1;
-        const isOpen = open[job.id];
-
-        return (
-          <section key={job.id} className={`past-row ${flip ? "flip" : ""}`}>
-            <div className="past-content">
-              <h3 className="past-title">{job.title}</h3>
-              <p className="past-dates">{job.dates}</p>
-
-              <button
-                className="expand-btn"
-                onClick={() => toggle(job.id)}
-                aria-expanded={isOpen}
-                aria-controls={`desc-${job.id}`}
-              >
-                {isOpen ? "(-)" : "(+)"}
-              </button>
-
-              {isOpen && (
-                <div id={`desc-${job.id}`}>
-                  {job.bullets.map((b, j) => (
-                    <p key={j} className="past-body">
-                      {b}
-                    </p>
-                  ))}
-                </div>
-              )}
-            </div>
-          </section>
-        );
-      })}
-    </main>
-  );
+    </div>
+  )
 }

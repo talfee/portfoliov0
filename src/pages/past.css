@@ -92,9 +92,12 @@
 
 .past-hero {
   width: 100%;
-  height: 60vh; /* adjust height to taste */
+  height: 60vh;       /* adjust how tall you want it (e.g., 50vh, 70vh) */
+  margin: 0;
+  padding: 0;
 }
 
+/* Ensure Canvas fills its container */
 .past-hero canvas {
   width: 100% !important;
   height: 100% !important;

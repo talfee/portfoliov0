@@ -5,11 +5,6 @@
   color: var(--beige);
 }
 
-.page-content {
-  padding: 40px 244px 120px;
-  margin: 0 auto;
-}
-
 /* header */
 .header {
   position: sticky;

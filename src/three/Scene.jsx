@@ -26,7 +26,7 @@ function SunMoon({ isDay }) {
 function CloudModel(props) {
   // Place your file at: public/models/cloud.glb
   const group = useRef();
-  const gltf = useGLTF("/models/cloud.glb"); // loads from /public
+  const gltf = useGLTF("/models/sunandmoon.glb"); // loads from /public
 
   // Minimal drag-to-rotate interactivity
   function onPointerDown(e) {
@@ -68,7 +68,7 @@ function CloudModel(props) {
 }
 
 // Preload so it's cached before first render
-useGLTF.preload("/models/cloud.glb");
+useGLTF.preload("/models/sunandmoon.glb");
 
 /** ------- Main scene ------- */
 export default function Scene({ isDay, shadows }) {
